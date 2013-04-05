@@ -30,7 +30,7 @@
 
     var connect = function(){
         var url = 'https://graph.facebook.com/oauth/authorize?client_id='+ app_id +'&redirect_uri='+ redirect_uri +'&display='+ display +'&scope='+ scope +'';
-        window.plugins.childBrowser.showWebPage(url);
+        window.plugins.childBrowser.showWebPage(url, { showLocationBar: false });
     };
 
     $(document).on('deviceready', function(e){
