@@ -13,7 +13,6 @@
         Ronin
     </author>
 
-    <preference name="stay-in-webview" value="true" />
     <preference name="phonegap-version" value="2.3.0" />
     <preference name="orientation"      value="portrait" />
     <preference name="target-device"    value="universal" />
@@ -33,10 +32,8 @@
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
 
-    <feature name="http://plugins.phonegap.com/ChildBrowser/4.1.1" />
 
-    <gap:plugin name="ChildBrowser" version="~4" />
+    <gap:plugin name="ChildBrowser" />
 
-    <access origin="*" />
 </widget>
 
