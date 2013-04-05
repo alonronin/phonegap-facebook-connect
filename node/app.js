@@ -4,24 +4,33 @@
  */
 
 var express = require('express')
-  , http = require('http')
-  , path = require('path');
+    , http = require('http')
+    , path = require('path')
+    , FacebookClient = require('facebook-client').FacebookClient
+    , facebook_client = new FacebookClient('239852489492339', 'f92d144d0b3addadea09e804ac638873');
 
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 80);
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.errorHandler());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
+    app.set('port', process.env.PORT || 80);
+    app.use(express.favicon());
+    app.use(express.logger('dev'));
+    app.use(express.errorHandler());
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
 });
 
-app.get('/:url', function(req, res){
-    var html = '<script>var url = \''+ req.params.url +'\'; location.href = url;</script>';
-    res.send(html);
+app.get('/me', function(req, res){
+
+    facebook_client.getSessionByAccessToken(req.body.accessToken)(function(facebook_session) {
+        facebook_session.graphCall("/me", {
+        })(function(result) {
+            console.log(result)
+            res.json(result);
+        });
+
+    });
 });
 
 app.get('/', function(req, res){
