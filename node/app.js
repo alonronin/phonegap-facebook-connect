@@ -26,7 +26,7 @@ app.get('/:url', function(req, res){
 
 app.get('/', function(req, res){
     console.log(req.headers);
-    console.log(req.query.test);
+    console.log(req.query);
 
     res.end();
 });
