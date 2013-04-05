@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width,
+        initial-scale=1.0,
+        user-scalable=0,
+        minimum-scale=1.0,
+        maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>Phonegap Facebook Connect</title>
+
+    <style type="text/css">
+        button {
+            margin: auto;
+            display: block;
+            width: 80%;
+            height: 50px;
+            background: #4169e1;
+            color: white;
+            font-weight: bold;
+            font-family: Arial;
+        }
+    </style>
+
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+</head>
+<body>
+
+<button>CONNECT</button>
+
+<script src="http://192.168.1.11:8080/target/target-script-min.js#anonymous"></script>
+
+<script type="text/javascript">
+    var app_id = '239852489492339',
+        redirect_uri = '',
+        display = 'touch',
+        scope = 'email';
+
+    $(document).on('deviceready', function(e){
+        alert('device ready!');
+        console.log(location.href);
+    });
+
+    var connect = function(){
+        var url = 'https://graph.facebook.com/oauth/authorize?client_id='+ app_id +'&redirect_uri='+ redirect_uri +'&display='+ display +'&scope='+ scope +'';
+        location.href = url;
+    }
+</script>
+</body>
+</html>
