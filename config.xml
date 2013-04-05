@@ -33,9 +33,7 @@
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
 
-    <gap:plugin name="FacebookConnect">
-        <param name="APP_ID" value="311873778926976" />
-    </gap:plugin>
+    <gap:plugin name="ChildBrowser" />
 
     <access origin="*" />
 </widget>

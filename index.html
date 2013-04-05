@@ -26,6 +26,8 @@
         }
     </style>
 
+    <script src="phonegap.js"></script>
+    <script src="childbrowser.js"></script>
     <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -43,6 +45,7 @@
     $(document).on('deviceready', function(e){
         alert('device ready!');
         console.log(location.href);
+        ChildBrowser.showWebPage('http://www.ronin.co.il/')
     });
 
     var connect = function(){
