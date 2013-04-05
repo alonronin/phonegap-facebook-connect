@@ -36,11 +36,7 @@
 
     $(document).on('deviceready', function(e){
         window.plugins.childBrowser.onLocationChange = function (url) {
-            url = $.url(url);
-            if(url.host == 'roninhome.dyndns.org') {
-                localStorage.setItem('facebook_code', url.param('code'));
-                window.plugins.childBrowser.close();
-            }
+            console.log(url);
         };
 
         connect();
