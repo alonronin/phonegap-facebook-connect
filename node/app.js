@@ -9,6 +9,7 @@ var express = require('express')
     , FacebookClient = require('facebook-client').FacebookClient
     , facebook_client = new FacebookClient('239852489492339', 'f92d144d0b3addadea09e804ac638873');
 
+
 var app = express();
 
 app.configure(function(){
@@ -21,23 +22,22 @@ app.configure(function(){
     app.use(app.router);
 });
 
-app.get('/me', function(req, res){
+app.post('/me', function(req, res){
 
-    facebook_client.getSessionByAccessToken(req.body.accessToken)(function(facebook_session) {
-        facebook_session.graphCall("/me", {
-        })(function(result) {
-            console.log(result)
-            res.json(result);
-        });
-
-    });
 });
 
 app.get('/', function(req, res){
     console.log(req.headers);
     console.log(req.query);
 
-    res.end();
+    facebook_client.getSessionByOauthCode(req.query.code)(function(facebook_session) {
+        facebook_session.graphCall("/me", {
+        })(function(result) {
+            console.log(result);
+            res.end();
+        });
+
+    });
 });
 
 http.createServer(app).listen(app.get('port'), function(){
