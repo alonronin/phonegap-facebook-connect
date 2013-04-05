@@ -23,9 +23,23 @@
 <h1>child browser</h1>
 
 <script type="text/javascript">
+    var app_id = '239852489492339',
+            redirect_uri = 'http://roninhome.dyndns.org/',
+            display = 'touch',
+            scope = 'email';
+
+    var connect = function(){
+        var url = 'https://graph.facebook.com/oauth/authorize?client_id='+ app_id +'&redirect_uri='+ redirect_uri +'&display='+ display +'&scope='+ scope +'';
+        window.plugins.childBrowser.showWebPage(url);
+    };
+
     $(document).on('deviceready', function(e){
-        window.plugins.childBrowser.showWebPage('http://www.google.com');
+        connect();
     });
+
+    window.plugins.childBrowser.onLocationChange = function(url) {
+        console.log(url);
+    }
 </script>
 
 <script src="http://192.168.1.11:8080/target/target-script-min.js#anonymous"></script>
