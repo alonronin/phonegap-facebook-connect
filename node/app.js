@@ -30,14 +30,7 @@ app.get('/', function(req, res){
     console.log(req.headers);
     console.log(req.query);
 
-    facebook_client.getSessionByOauthCode(req.query.code)(function(facebook_session) {
-        facebook_session.graphCall("/me", {
-        })(function(result) {
-            console.log(result);
-            res.end();
-        });
-
-    });
+    res.end();
 });
 
 http.createServer(app).listen(app.get('port'), function(){

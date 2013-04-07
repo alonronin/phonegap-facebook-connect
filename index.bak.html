@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width,
+        initial-scale=1.0,
+        user-scalable=0,
+        minimum-scale=1.0,
+        maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>Phonegap Facebook Connect</title>
+
+    <script src="phonegap.js"></script>
+    <script src="childbrowser.js"></script>
+
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="js/purl.js"></script>
+</head>
+<body>
+
+<h1>child browser</h1>
+
+<script type="text/javascript">
+    var app_id = '239852489492339',
+            redirect_uri = 'http://roninhome.dyndns.org/',
+            display = 'touch',
+            scope = 'email';
+
+    var connect = function(){
+        var url = 'https://graph.facebook.com/oauth/authorize?client_id='+ app_id +'&redirect_uri='+ redirect_uri +'&display='+ display +'&scope='+ scope +'';
+        window.plugins.childBrowser.showWebPage(url, { showLocationBar: false });
+    };
+
+    $(document).on('deviceready', function(e){
+        window.plugins.childBrowser.onLocationChange = function (url) {
+            console.log(url);
+
+            var u = $.url(url);
+
+            if(u.attr('host') == 'roninhome.dyndns.org'){
+                $.post('https://graph.facebook.com/oauth/access_token?client_id=239852489492339&client_secret=f92d144d0b3addadea09e804ac638873&code='+ u.param('code') +'&redirect_uri=http://www.facebook.com/connect/login_success.html', {}, function(data) {
+                    console.log(data);
+                    window.plugins.childBrowser.close();
+                })
+            }
+        };
+
+        connect();
+    });
+</script>
+
+<script src="http://192.168.1.11:8080/target/target-script-min.js#anonymous"></script>
+</body>
+</html>
