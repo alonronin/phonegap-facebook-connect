@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.ronin.phongap-facebook-connect"
-        version   = "0.0.1">
-    <name>Phonegap Facebook Connect</name>
+        id        = "com.phonegap.how-is-it"
+        version   = "2.7.0">
+    <name>How Is It</name>
 
     <description>
         Description
     </description>
 
-    <author href="http://www.ronin.co.il" email="alon@ronin.co.il">
-        Ronin
+    <author href="http://empeeric.com" email="info@empeeric.com">
+        Empeeric
     </author>
 
-    <preference name="phonegap-version" value="2.3.0" />
+    <feature name="http://api.phonegap.com/1.0/device" />
+
+    <preference name="phonegap-version" value="2.7.0" />
     <preference name="orientation"      value="portrait" />
     <preference name="target-device"    value="universal" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" value="false" />
-    <preference name="prerendered-icon" value="false" />
+    <preference name="prerendered-icon" value="true" />
 
     <icon src="icon.png" />
 
-    <feature name="http://api.phonegap.com/1.0/device" />
+    <preference name="permissions" value="none"/>
+
     <feature name="http://api.phonegap.com/1.0/battery"/>
     <feature name="http://api.phonegap.com/1.0/camera"/>
     <feature name="http://api.phonegap.com/1.0/contacts"/>
@@ -33,8 +36,9 @@
     <feature name="http://api.phonegap.com/1.0/notification"/>
 
     <gap:plugin name="FacebookConnect">
-        <param name="APP_ID" value="239852489492339" />
+        <param name="APP_ID" value="311873778926976" />
     </gap:plugin>
 
+    <access origin="*" />
 </widget>
 

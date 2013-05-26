@@ -1,181 +1,236 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style type="text/css">
-        button {
-            display: block;
-            width: 80%;
-            height: 40px;
-            background: #4682b4;
-            color: white;
-            border: 0;
-            border-radius: 5px;
-            margin: auto;
-            margin-bottom: 5px;
-            font-size: 16px;
-            font-weight: bold;
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,
+        initial-scale=1.0,
+        user-scalable=0,
+        minimum-scale=1.0,
+        maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>How Is It?</title>
 
-        }
-    </style>
+    <link rel="stylesheet" href="resources/css/fonts.css" media="all">
+    <link rel="stylesheet" href="resources/css/style.css" media="all">
 
-    <!-- cordova -->
+    <script type="text/javascript" src="resources/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="resources/js/jquery.hammer.js"></script>
+    <script type="text/javascript" src="resources/js/jquery.restjson.js"></script>
+    <script type="text/javascript" src="resources/js/dust-full-1.1.1.js"></script>
+    <script type="text/javascript" src="resources/js/compiled_templates.js"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=true&language=iw&"></script>
+    <script type="text/javascript" src="resources/js/iscroll.js"></script>
+    <script type="text/javascript" src="resources/js/InfoBox.js"></script>
+
     <script src="phonegap.js"></script>
-    <!-- cordova facebook plugin -->
     <script src="cdv-plugin-fb-connect.js"></script>
-    <!-- facebook js sdk -->
     <script src="facebook-js-sdk.js"></script>
 
-    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="js/jquery.restjson.js"></script>
-    <script type="text/javascript" src="js/jquery.hammer.js"></script>
+    <script type="text/javascript">
+        (function($){
+            /*$(document).on('deviceready', function(e){
+                *//*console.log('device is ready!');
 
+                FB.init({ appId: '311873778926976', nativeInterface: CDV.FB, useCachedDialogs: false });*//*
+            });*/
 
+            $(function(){
+                $(document).hammer();
+                var pages = new Pages();
+
+                /*FB.Event.subscribe('auth.statusChange', function(response) {
+                    console.log('statusChange', response);
+
+                    if(response.status == 'connected') pages.map();
+                });
+
+                FB.getLoginStatus(function(response) {
+                    if (response.status == 'connected') {
+                        pages.map();
+                    }
+                });*/
+
+                $('button').on('tap', function(){
+                    pages.map();
+                    /*FB.login(
+                        function(response) {
+                            console.log('login', response);
+                        },
+                        { scope: "email" }
+                    );*/
+                });
+            });
+
+        })(jQuery);
+
+        (function($){
+            var Pages = window.Pages = function(){
+                this.scroll = null;
+                this.gmap = null;
+                this.position = { coords: {
+                    latitude: 32.066158,
+                    longitude: 34.777819
+                }};
+
+                this.url = 'http://critic-place.herokuapp.com';
+                this.bar = null;
+                this.interval = null;
+
+                this.facebook();
+            };
+
+            Pages.prototype.clear = function(){
+                this.scroll&&this.scroll.destroy();
+                this.gmap = null;
+                clearInterval(this.interval);
+                this.interval = null;
+                $('.view').remove();
+            };
+
+            Pages.prototype.rating = function(){
+                var self = this;
+                self.clear();
+
+                console.log(self);
+
+                $.getJSON(self.url + '/place/' + self.bar, function(result){
+
+                    dust.render('rating', result, function(err, html){
+                        if(!err) $('body').append(html);
+
+                        var $slider = $('#rating .slider');
+                        $slider.css('width', $slider.css('width').replace('px', '') - 110 + 'px');
+
+                        $('input').on('touchend', function(e){
+                            var sliders = [];
+
+                            $('input').each(function(i, input){
+                                var $input = $(input);
+                                sliders.push({parameter: $input.attr('data-id'), value: $input.val()})
+                            });
+
+                            var o = $.extend(JSON.parse(localStorage.cdv_fb_session), {sliders: sliders});
+
+                            console.log(o);
+
+                            $.postJSON(self.url + '/place/' + self.bar, o, function(data){
+                                console.log(data)
+                            })
+                        });
+
+                        $('.view').on('tap', '.header .button', function(e){
+                            self.map();
+                        });
+
+                        //self.scroll = new iScroll('scroll');
+                    });
+                })
+
+            };
+
+            Pages.prototype.facebook = function(){
+                var self = this;
+                self.clear();
+
+                dust.render('facebook', {}, function(err, html){
+                    if(!err) $('body').append(html);
+                });
+            };
+
+            Pages.prototype.map = function(){
+                var self = this;
+                self.clear();
+
+                dust.render('map', {}, function(err, html){
+                    if(!err) $('body').append(html);
+
+                    navigator.geolocation.getCurrentPosition(function(position){
+                        self.position = position;
+                        self.render_map();
+                    }, self.render_map, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+                });
+
+            };
+
+            Pages.prototype.render_map = function(){
+                var self = this;
+
+                var options = {
+                    zoom:16,
+                    center:new google.maps.LatLng(32.066158, 34.777819),
+                    mapTypeId:google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI:true,
+                    disableDoubleClickZoom:true
+                };
+
+                self.gmap = new google.maps.Map($('#map .wrapper').get(0), options);
+
+                var popup_options = {
+                    pane: 'floatPane',
+                    enableEventPropagation: 'true',
+                    boxStyle: {
+                        background: 'url(resources/css/images/location-info-bg.png) no-repeat',
+                        "padding-top": '7px',
+                        "padding-left": '7px',
+                        width: '250px',
+                        height: '135px'
+                    },
+                    pixelOffset: new google.maps.Size(-125, -195),
+                    closeBoxURL: ''
+                };
+                var popup = new InfoBox(popup_options);
+
+                var lat, lng, data, markerPosition;
+                $.getJSON(self.url + '/search', function(result){
+                    $.each(result, function(i, item){
+                        data = {
+                            name: item.name,
+                            description : item.description,
+                            address : item.geo.address,
+                            _id: item._id
+                        };
+
+                        lat = item.geo.geometry.lat;
+                        lng = item.geo.geometry.lng;
+                        markerPosition = new google.maps.LatLng(lat, lng);
+                        var marker = new google.maps.Marker({
+                            position : markerPosition,
+                            map: self.gmap,
+                            icon: 'resources/css/images/location-icon.png',
+                            visible:true
+                        });
+
+                        marker.metadata = {
+                            name: item.name,
+                            description : item.description,
+                            address : item.geo.address,
+                            _id: item._id
+                        };
+
+                        google.maps.event.addListener(marker, 'click', function(){
+                            var myId = marker.metadata._id;
+                            var content = null;
+                            dust.render('overlay', marker.metadata, function(err, html){
+                                if (!err){
+                                    popup.setContent(html);
+                                    popup.open(self.gmap, marker);
+                                    self.bar = myId;
+                                }
+                            });
+                        });
+                    });
+
+                    $('.view').on('tap', '.overlay_content button', function(e){
+                        self.rating();
+                    })
+                })
+            }
+
+        })(jQuery);
+    </script>
 </head>
 <body>
-<button onclick="login()">Login</button>
-<button onclick="me()">Me</button>
-<!--<button onclick="getSession()">Get session</button>-->
-<button onclick="getLoginStatus()">Get login</button>
-<button onclick="logout()">Logout</button>
-<button onclick="facebookWallPost()">facebookWallPost</button>
-<button onclick="publishStoryFriend()">friendstory</button>
-
-<div id="data">loading ...</div>
-
-<!--<script src="http://localhost:8080/target/target-script-min.js#anonymous"></script>-->
-<div id="fb-root"></div>
-
-
-<script>
-
-    if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable does not exist. Check that you have included cordova.js correctly');
-    if (typeof CDV == 'undefined') alert('CDV variable does not exist. Check that you have included cdv-plugin-fb-connect.js correctly');
-    if (typeof FB == 'undefined') alert('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
-
-    FB.Event.subscribe('auth.login', function(response) {
-        alert('auth.login event');
-    });
-
-    FB.Event.subscribe('auth.logout', function(response) {
-        alert('auth.logout event');
-    });
-
-    FB.Event.subscribe('auth.sessionChange', function(response) {
-        alert('auth.sessionChange event');
-    });
-
-    FB.Event.subscribe('auth.statusChange', function(response) {
-        alert('auth.statusChange event');
-    });
-
-    /*function getSession() {
-     alert("session: " + JSON.stringify(FB.getSession()));
-     }
-     */
-    function getLoginStatus() {
-        FB.getLoginStatus(function(response) {
-            if (response.status == 'connected') {
-                alert('logged in');
-            } else {
-                alert('not logged in');
-            }
-        });
-    }
-    var friendIDs = [];
-    var fdata;
-    function me() {
-        FB.api('/me/friends', { fields: 'id, name, picture' },  function(response) {
-            if (response.error) {
-                alert(JSON.stringify(response.error));
-            } else {
-                var data = document.getElementById('data');
-                fdata=response.data;
-                console.log("fdata: "+fdata);
-                response.data.forEach(function(item) {
-                    var d = document.createElement('div');
-                    d.innerHTML = "<img src="+item.picture+"/>"+item.name;
-                    data.appendChild(d);
-                });
-            }
-            var friends = response.data;
-            console.log(friends.length);
-            for (var k = 0; k < friends.length && k < 200; k++) {
-                var friend = friends[k];
-                var index = 1;
-
-                friendIDs[k] = friend.id;
-                //friendsInfo[k] = friend;
-            }
-            console.log("friendId's: "+friendIDs);
-        });
-    }
-
-    function logout() {
-        FB.logout(function(response) {
-            alert('logged out');
-        });
-    }
-
-    function login() {
-        FB.login(
-                function(response) {
-                    if (response.session) {
-                        alert('logged in');
-                    } else {
-                        alert('not logged in');
-                    }
-                },
-                { scope: "email" }
-        );
-    }
-
-
-    function facebookWallPost() {
-        console.log('Debug 1');
-        var params = {
-            method: 'feed',
-            name: 'Facebook Dialogs',
-            link: 'https://developers.facebook.com/docs/reference/dialogs/',
-            picture: 'http://fbrell.com/f8.jpg',
-            caption: 'Reference Documentation',
-            description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
-        };
-        console.log(params);
-        FB.ui(params, function(obj) { console.log(obj);});
-    }
-
-    function publishStoryFriend() {
-        randNum = Math.floor ( Math.random() * friendIDs.length );
-
-        var friendID = friendIDs[randNum];
-        if (friendID == undefined){
-            alert('please click the me button to get a list of friends first');
-        }else{
-            console.log("friend id: " + friendID );
-            console.log('Opening a dialog for friendID: ', friendID);
-            var params = {
-                method: 'feed',
-                to: friendID.toString(),
-                name: 'Facebook Dialogs',
-                link: 'https://developers.facebook.com/docs/reference/dialogs/',
-                picture: 'http://fbrell.com/f8.jpg',
-                caption: 'Reference Documentation',
-                description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
-            };
-            FB.ui(params, function(obj) { console.log(obj);});
-        }
-    }
-
-    document.addEventListener('deviceready', function() {
-        try {
-            alert('Device is ready! Make sure you set your app_id below this alert.');
-            FB.init({ appId: "239852489492339", nativeInterface: CDV.FB, useCachedDialogs: false });
-            document.getElementById('data').innerHTML = "";
-        } catch (e) {
-            alert(e);
-        }
-    }, false);
-</script>
-<div id="log"></div>
+    <div id="fb-root"></div>
 </body>
 </html>

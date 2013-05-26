@@ -1,0 +1,59 @@
+@font-face {
+    font-family: 'OpenSans';
+    src: url('../typography/OpenSans-CondBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src: url('../typography/OpenSans-CondLight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Magra';
+    src: url('../typography/Magra-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Magra';
+    src: url('../typography/Magra-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'helveticaneue';
+    src: url('../typography/helveticaneue-roman-webfont-webfont.ttf') format('truetype'),
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'helveticaneue';
+    src: url('../typography/helveticaneue_medium-webfont.ttf') format('truetype')
+    font-weight: 600;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'helvetica-neue';
+    src: url('../typography/helveticaneue-bold-webfont.ttf') format('truetype'),
+    font-weight: 700;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'helvetica-neue-ce';
+    src: url('../typography/helvetica_neue_ce_75_bold-webfont.ttf') format('truetype'),
+    font-weight: 700;
+    font-style: normal;
+
+}
